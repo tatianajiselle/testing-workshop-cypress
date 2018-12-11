@@ -7,7 +7,11 @@
 it('starts with zero items (waits)', () => {
   cy.visit('/')
   // wait 1 second
-  // then check the number of items
+  // then check the number of items  // check if the list is empty initially
+  cy.wait(1000)
+  //   in the list
+  //   use cy.get(...) and it should have length of 0
+  //   https://on.cypress.io/get
   cy.get('li.todo').should('have.length', 0)
 })
 
@@ -23,17 +27,20 @@ it('starts with zero items', () => {
   cy.get('li.todo').should('have.length', 0)
 })
 
-it('starts with zero items (stubbed response)', () => {
+it.only('starts with zero items (stubbed response)', () => {
   // start Cypress network server
+  cy.server()
   // stub `GET /todos` with []
+  cy.route('GET', '/todos').as('todos')
   // save the stub as an alias
 
   // THEN visit the page
   cy.visit('/')
-
+  cy.wait('@todos')
   // wait for the route alias
   // grab its response body
   // and make sure the body is an empty list
+  cy.get('li.todo').should('have.length', 0)
 })
 
 it('starts with zero items (fixture)', () => {
